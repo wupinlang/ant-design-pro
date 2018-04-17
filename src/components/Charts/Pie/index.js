@@ -19,7 +19,7 @@ export default class Pie extends Component {
   };
 
   componentDidMount() {
-    this.getLengendData();
+    this.getLegendData();
     this.resize();
     window.addEventListener('resize', this.resize);
   }
@@ -28,7 +28,7 @@ export default class Pie extends Component {
     if (this.props.data !== preProps.data) {
       // because of charts data create when rendered
       // so there is a trick for get rendered time
-      this.getLengendData();
+      this.getLegendData();
     }
   }
 
@@ -42,7 +42,7 @@ export default class Pie extends Component {
   };
 
   // for custom lengend view
-  getLengendData = () => {
+  getLegendData = () => {
     if (!this.chart) return;
     const geom = this.chart.getAllGeoms()[0]; // 获取所有的图形
     const items = geom.get('dataArray') || []; // 获取图形对应的
