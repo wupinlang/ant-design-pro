@@ -29,6 +29,7 @@ function RouterConfig({ history, app }) {
             redirectPath="/user/login"
           />
         </Switch>
+
       </ConnectedRouter>
     </LocaleProvider>
   );
