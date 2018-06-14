@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import { Route, Redirect, Switch, routerRedux } from 'dva/router';
 import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
+import pathToRegexp from 'path-to-regexp';
 import { enquireScreen, unenquireScreen } from 'enquire-js';
 import GlobalHeader from '../components/GlobalHeader';
 import GlobalFooter from '../components/GlobalFooter';
@@ -108,19 +109,26 @@ class BasicLayout extends React.PureComponent {
       type: 'user/fetchCurrent',
     });
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     unenquireScreen(this.enquireHandler);
   }
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
     let title = 'Ant Design Pro';
-    if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - Ant Design Pro`;
+    let currRouterData = null;
+    // match params path
+    Object.keys(routerData).forEach(key => {
+      if (pathToRegexp(key).test(pathname)) {
+        currRouterData = routerData[key];
+      }
+    });
+    if (currRouterData && currRouterData.name) {
+      title = `${currRouterData.name} - Ant Design Pro`;
     }
     return title;
   }
-  getBashRedirect = () => {
+  getBaseRedirect = () => {
     // According to the url parameter to redirect
     // 这里是重定向的,重定向到 url 的 redirect 参数所示地址
     const urlParams = new URL(window.location.href);
@@ -181,7 +189,7 @@ class BasicLayout extends React.PureComponent {
       match,
       location,
     } = this.props;
-    const bashRedirect = this.getBashRedirect();
+    const bashRedirect = this.getBaseRedirect();
     const layout = (
       <Layout>
         <SiderMenu
