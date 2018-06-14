@@ -70,14 +70,23 @@ export function getPlainNode(nodeList, parentPath = '') {
   return arr;
 }
 
+function accMul(arg1, arg2) {
+  let m = 0;
+  const s1 = arg1.toString();
+  const s2 = arg2.toString();
+  m += s1.split(".").length > 1 ? s1.split(".")[1].length : 0;
+  m += s2.split(".").length > 1 ? s2.split(".")[1].length : 0;
+  return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / 10 ** m;
+}
+
 export function digitUppercase(n) {
   const fraction = ['角', '分'];
   const digit = ['零', '壹', '贰', '叁', '肆', '伍', '陆', '柒', '捌', '玖'];
-  const unit = [['元', '万', '亿'], ['', '拾', '佰', '仟']];
+  const unit = [['元', '万', '亿'],['', '拾', '佰', '仟', '万']];
   let num = Math.abs(n);
   let s = '';
   fraction.forEach((item, index) => {
-    s += (digit[Math.floor(num * 10 * 10 ** index) % 10] + item).replace(/零./, '');
+    s += (digit[Math.floor(accMul(num, 10 * 10 ** index)) % 10] + item).replace(/零./, '');
   });
   s = s || '整';
   num = Math.floor(num);
@@ -114,11 +123,10 @@ function getRenderArr(routes) {
   let renderArr = [];
   renderArr.push(routes[0]);
   for (let i = 1; i < routes.length; i += 1) {
-    let isAdd = false;
-    // 是否包含
-    isAdd = renderArr.every(item => getRelation(item, routes[i]) === 3);
     // 去重
     renderArr = renderArr.filter(item => getRelation(item, routes[i]) !== 1);
+    // 是否包含
+    const isAdd = renderArr.every(item => getRelation(item, routes[i]) === 3);
     if (isAdd) {
       renderArr.push(routes[i]);
     }
